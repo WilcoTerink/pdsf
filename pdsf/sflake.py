@@ -56,7 +56,7 @@ def read_table(username, password, account, database, schema, stmt):
     return df1
 
 
-def to_table(df, table, username, password, account, database, schema, if_exists='append'):
+def to_table(df, table, username, password, account, database, schema, truncate=False):
     """
     Function to append a DataFrame onto an existing mssql table.
 
@@ -83,11 +83,26 @@ def to_table(df, table, username, password, account, database, schema, if_exists
     -------
     None
     """
-    ### Prepare the engine
+    if truncate:
+        ctx = snowflake.connector.connect(
+        user=username,
+        password=password,
+        account=account,
+        database=database,
+        schema=schema,
+        )
+    cs = ctx.cursor()
+    try:
+        cs.execute("truncate table {table}".format(table=table))
+    finally:
+        cs.close()
+        ctx.close()
+
+    ## Prepare the engine
     engine = create_snowflake_engine(username, password, account, database, schema)
 
-    ### Save to mssql table
-    df.to_sql(name=table, con=engine, schema=schema, if_exists=if_exists, chunksize=5000, index=False)
+    ## Save to mssql table
+    df.to_sql(name=table, con=engine, schema=schema, if_exists='append', chunksize=5000, index=False)
 
 
 #def to_table(df, table, username, password, account, database, schema, create=False, truncate=False):
