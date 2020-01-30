@@ -76,8 +76,8 @@ def to_table(df, table, username, password, account, database, schema, truncate=
         The specific database within the server. e.g.: 'LowFlows'
     schema : str
         The schema associated with the table to be read.
-    if_exists : str
-        Options are 'fail', 'replace', or 'append'.
+    truncate : bool
+        Should the table rows be cleared via truncate before adding new data?
 
     Returns
     -------
@@ -85,18 +85,18 @@ def to_table(df, table, username, password, account, database, schema, truncate=
     """
     if truncate:
         ctx = snowflake.connector.connect(
-        user=username,
-        password=password,
-        account=account,
-        database=database,
-        schema=schema,
-        )
-    cs = ctx.cursor()
-    try:
-        cs.execute("truncate table {table}".format(table=table))
-    finally:
-        cs.close()
-        ctx.close()
+                user=username,
+                password=password,
+                account=account,
+                database=database,
+                schema=schema,
+                )
+        cs = ctx.cursor()
+        try:
+            cs.execute('truncate "{schema}"."{table}"'.format(schema=schema, table=table))
+        finally:
+            cs.close()
+            ctx.close()
 
     ## Prepare the engine
     engine = create_snowflake_engine(username, password, account, database, schema)
