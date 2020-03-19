@@ -1,6 +1,6 @@
 {% set name = "pdsf" %}
-{% set version = "0.1.0" %}
-{% set sha256 = "f81b45d6e11f1c5821b8104fa326d4d2120904ae5123fa7b09e9ec89f0ea8e31" %}
+{% set version = "0.1.4" %}
+{% set sha256 = "309c6daedb90a519e8048d017ed70f48dc2ab8075f36ab9312db41dbfe2cb12d" %}
 
 # sha256 is the prefered checksum -- you can get it for a file with:
 #  `openssl sha256 <file name>`.
