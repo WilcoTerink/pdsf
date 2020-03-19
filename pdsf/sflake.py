@@ -13,7 +13,7 @@ import snowflake.connector
 ####################################################
 
 
-def read_table(username, password, account, database, schema, stmt):
+def read_table(username, password, account, database, schema, stmt, warehouse=None):
     """
     Function to import data from an MSSQL database.
 
@@ -31,6 +31,8 @@ def read_table(username, password, account, database, schema, stmt):
         The schema associated with the table to be read.
     stmt : str
         Custom SQL statement to be directly passed to the database and schema.
+    warehouse: str
+        Optionally, set the snowflake warehouse to operate under
 
     Returns
     -------
@@ -44,6 +46,7 @@ def read_table(username, password, account, database, schema, stmt):
         account=account,
         database=database,
         schema=schema,
+        warehouse=warehouse
         )
     cs = ctx.cursor()
     try:
@@ -56,7 +59,7 @@ def read_table(username, password, account, database, schema, stmt):
     return df1
 
 
-def to_table(df, table, username, password, account, database, schema, truncate=False):
+def to_table(df, table, username, password, account, database, schema, truncate=False, warehouse=None):
     """
     Function to append a DataFrame onto an existing mssql table.
 
@@ -78,6 +81,8 @@ def to_table(df, table, username, password, account, database, schema, truncate=
         The schema associated with the table to be read.
     truncate : bool
         Should the table rows be cleared via truncate before adding new data?
+    warehouse: str
+        Optionally, set the snowflake warehouse to operate under
 
     Returns
     -------
@@ -90,6 +95,7 @@ def to_table(df, table, username, password, account, database, schema, truncate=
                 account=account,
                 database=database,
                 schema=schema,
+                warehouse=warehouse
                 )
         cs = ctx.cursor()
         try:
