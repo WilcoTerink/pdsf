@@ -71,19 +71,20 @@ def compare_dfs(old_df, new_df, on):
     return dict1
 
 
-def create_snowflake_engine(username, password, account, database, schema):
+def create_snowflake_engine(username, password, account, database, schema, warehouse=None):
     """
 
     """
-
-    engine = sqlalchemy.create_engine(
-    'snowflake://{user}:{password}@{account}/{database}/{schema}'.format(
+    conn_str = 'snowflake://{user}:{password}@{account}/{database}/{schema}'.format(
         user=username,
         password=password,
         account=account,
         database=database,
         schema=schema
-    ))
+    )
+    if isinstance(warehouse, str):
+        conn_str = conn_str + '?warehouse=' + warehouse
+    engine = sqlalchemy.create_engine(conn_str)
     return engine
 
 
