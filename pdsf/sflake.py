@@ -13,7 +13,7 @@ import snowflake.connector
 ####################################################
 
 
-def read_table(username, password, account, database, schema, stmt, warehouse=None):
+def read_table(username, password, account, database, schema, stmt, warehouse=None, role=None):
     """
     Function to import data from an MSSQL database.
 
@@ -46,7 +46,8 @@ def read_table(username, password, account, database, schema, stmt, warehouse=No
         account=account,
         database=database,
         schema=schema,
-        warehouse=warehouse
+        warehouse=warehouse,
+        role=role
         )
     cs = ctx.cursor()
     try:
@@ -59,7 +60,7 @@ def read_table(username, password, account, database, schema, stmt, warehouse=No
     return df1
 
 
-def to_table(df, table, username, password, account, database, schema, truncate=False, warehouse=None):
+def to_table(df, table, username, password, account, database, schema, truncate=False, warehouse=None, role=None):
     """
     Function to append a DataFrame onto an existing mssql table.
 
@@ -95,11 +96,12 @@ def to_table(df, table, username, password, account, database, schema, truncate=
                 account=account,
                 database=database,
                 schema=schema,
-                warehouse=warehouse
+                warehouse=warehouse,
+                role=role
                 )
         cs = ctx.cursor()
         try:
-            cs.execute('truncate "{schema}"."{table}"'.format(schema=schema, table=table))
+            cs.execute('delete from "{schema}"."{table}"'.format(schema=schema, table=table))
         finally:
             cs.close()
             ctx.close()
