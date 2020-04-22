@@ -82,10 +82,13 @@ def create_snowflake_engine(username, password, account, database, schema, wareh
         database=database,
         schema=schema
     )
+    extra_params = []
     if isinstance(warehouse, str):
-        conn_str = conn_str + '?warehouse=' + warehouse
+        extra_params.append('warehouse=' + warehouse)
     if isinstance(role, str):
-        conn_str = conn_str + '?role=' + role
+        extra_params.append('role=' + role)
+    if extra_params:
+        conn_str = conn_str + '?' + '&'.join(extra_params)
     engine = sqlalchemy.create_engine(conn_str)
     return engine
 

@@ -107,7 +107,7 @@ def to_table(df, table, username, password, account, database, schema, truncate=
             ctx.close()
 
     ## Prepare the engine
-    engine = create_snowflake_engine(username, password, account, database, schema, warehouse)
+    engine = create_snowflake_engine(username, password, account, database, schema, warehouse, role)
 
     ## Save to mssql table
     df.to_sql(name=table, con=engine, schema=schema, if_exists='append', chunksize=5000, index=False)
